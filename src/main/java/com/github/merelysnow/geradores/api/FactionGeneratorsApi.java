@@ -9,5 +9,5 @@ import java.util.Optional;
 public interface FactionGeneratorsApi {
 
     @Nullable
-    Optional<FactionGenerators> getFactionByTag(@NotNull String factionTag);
+    FactionGenerators getFactionByTag(@NotNull String factionTag);
 }

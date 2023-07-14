@@ -76,6 +76,7 @@ public class GeneratorsView extends View {
                                         });
                             });
 
+                    factionGeneratorsDataBase.save(factionGenerators);
                     player.playSound(player.getLocation(), Sound.LEVEL_UP, 1.5F, 1.5F);
                 });
 

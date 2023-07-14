@@ -15,7 +15,7 @@ public class ImplFactionGeneratorsApi implements FactionGeneratorsApi {
     private final FactionGeneratorsCache factionGeneratorsCache;
 
     @Override
-    public @Nullable Optional<FactionGenerators> getFactionByTag(@NotNull String factionTag) {
-        return Optional.ofNullable(factionGeneratorsCache.get(factionTag));
+    public @Nullable FactionGenerators getFactionByTag(@NotNull String factionTag) {
+        return factionGeneratorsCache.get(factionTag);
     }
 }
