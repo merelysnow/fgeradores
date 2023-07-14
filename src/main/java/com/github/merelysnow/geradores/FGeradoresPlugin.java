@@ -4,6 +4,8 @@ import com.github.merelysnow.geradores.api.FactionGeneratorsApi;
 import com.github.merelysnow.geradores.api.impl.ImplFactionGeneratorsApi;
 import com.github.merelysnow.geradores.cache.FactionGeneratorsCache;
 import com.github.merelysnow.geradores.database.FactionGeneratorsDataBase;
+import com.github.merelysnow.geradores.database.GeneratorsLogsDataBase;
+import com.github.merelysnow.geradores.inventory.GeneratorsLogsView;
 import com.github.merelysnow.geradores.inventory.GeneratorsView;
 import com.github.merelysnow.geradores.listeners.GeneratorsCommandListener;
 import com.github.merelysnow.geradores.listeners.GeneratorsFactionListener;
@@ -20,7 +22,8 @@ public class FGeradoresPlugin extends JavaPlugin {
 
         final FactionGeneratorsCache factionGeneratorsCache = new FactionGeneratorsCache();
         final FactionGeneratorsDataBase factionGeneratorsDataBase = new FactionGeneratorsDataBase(this);
-        final ViewFrame viewFrame = ViewFrame.of(this, new GeneratorsView(factionGeneratorsDataBase)).register();
+        final GeneratorsLogsDataBase generatorsLogsDataBase = new GeneratorsLogsDataBase(this);
+        final ViewFrame viewFrame = ViewFrame.of(this, new GeneratorsView(factionGeneratorsDataBase, generatorsLogsDataBase), new GeneratorsLogsView(generatorsLogsDataBase)).register();
 
         factionGeneratorsDataBase.selectMany().forEach(geradores -> factionGeneratorsCache.put(geradores.getFactionTag(), geradores));
 
