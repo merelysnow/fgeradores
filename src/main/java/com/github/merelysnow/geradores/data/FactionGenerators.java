@@ -8,7 +8,7 @@ import java.util.Map;
 
 @AllArgsConstructor
 @Data
-public class FactionGeradores {
+public class FactionGenerators {
 
     private final String factionTag;
     private Map<EntityType, Integer> storagedSpawners;

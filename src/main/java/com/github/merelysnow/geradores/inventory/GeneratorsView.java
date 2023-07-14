@@ -1,12 +1,11 @@
 package com.github.merelysnow.geradores.inventory;
 
-import com.github.merelysnow.geradores.data.FactionGeradores;
-import com.github.merelysnow.geradores.database.FactionGeradoresDataBase;
+import com.github.merelysnow.geradores.data.FactionGenerators;
+import com.github.merelysnow.geradores.database.FactionGeneratorsDataBase;
 import com.github.merelysnow.geradores.utils.EntityName;
 import com.github.merelysnow.geradores.utils.InventoryUtil;
 import com.github.merelysnow.geradores.utils.SkullBuilder;
 import com.github.merelysnow.geradores.utils.item.ItemStackBuilder;
-import com.google.common.collect.Maps;
 import me.saiintbrisson.minecraft.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -19,16 +18,15 @@ import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
-public class GeradoresView extends View {
+public class GeneratorsView extends View {
 
-    private final FactionGeradoresDataBase factionGeradoresDataBase;
+    private final FactionGeneratorsDataBase factionGeneratorsDataBase;
 
-    public GeradoresView(FactionGeradoresDataBase factionGeradoresDataBase) {
+    public GeneratorsView(FactionGeneratorsDataBase factionGeneratorsDataBase) {
         super(6, "Geradores da facção");
 
-        this.factionGeradoresDataBase = factionGeradoresDataBase;
+        this.factionGeneratorsDataBase = factionGeneratorsDataBase;
         setLayout("XXXXXXXXX",
                 "XXXXXXXXX",
                 "XXXXXXXXX",
@@ -42,7 +40,7 @@ public class GeradoresView extends View {
     @Override
     protected void onRender(@NotNull ViewContext context) {
 
-        final FactionGeradores factionGeradores = context.get("factionGeradores");
+        final FactionGenerators factionGenerators = context.get("factionGeradores");
 
         context.slot(13, new ItemStackBuilder(Material.REDSTONE_COMPARATOR)
                         .displayName("§aArmazenar todos")
@@ -72,8 +70,8 @@ public class GeradoresView extends View {
                                             final String[] splitString = cleanLine.split("Tipo: ");
                                             final String spawnerType = cleanLine.length() > 1 ? splitString[1] : "";
 
-                                            System.out.println(String.format("[GERADORES-LOG] A facção [%s] armazenou %s x spawner de %s (%s)", factionGeradores.getFactionTag().toUpperCase(), itemStack.getAmount(), EntityName.fromTranslated(spawnerType).name().toUpperCase(), player.getName()));
-                                            factionGeradores.addAmountPlaced(EntityName.fromTranslated(spawnerType), itemStack.getAmount());
+                                            System.out.println(String.format("[GERADORES-LOG] A facção [%s] armazenou %s x spawner de %s (%s)", factionGenerators.getFactionTag().toUpperCase(), itemStack.getAmount(), EntityName.fromTranslated(spawnerType).name().toUpperCase(), player.getName()));
+                                            factionGenerators.addAmountPlaced(EntityName.fromTranslated(spawnerType), itemStack.getAmount());
                                             InventoryUtil.removeItem(player, itemStack, itemStack.getAmount());
                                         });
                             });
@@ -81,7 +79,7 @@ public class GeradoresView extends View {
                     player.playSound(player.getLocation(), Sound.LEVEL_UP, 1.5F, 1.5F);
                 });
 
-        for (Map.Entry<EntityType, Integer> spawner : factionGeradores.getStoragedSpawners().entrySet()) {
+        for (Map.Entry<EntityType, Integer> spawner : factionGenerators.getStoragedSpawners().entrySet()) {
             context.availableSlot().withItem(new SkullBuilder()
                     .setOwner("MHF_" + spawner.getKey().name().toUpperCase())
                     .displayName("§a" + NumberFormat.getInstance().format(spawner.getValue()) + "x gerador(es) de " + EntityName.valueOf(spawner.getKey()).getName())
@@ -101,10 +99,10 @@ public class GeradoresView extends View {
                         return;
                     }
 
-                    System.out.println(String.format("[GERADORES-LOG] A facção [%s] removeu 1x spawner de %s (%s)", factionGeradores.getFactionTag().toUpperCase(), spawner.getKey().name().toUpperCase(), player.getName()));
+                    System.out.println(String.format("[GERADORES-LOG] A facção [%s] removeu 1x spawner de %s (%s)", factionGenerators.getFactionTag().toUpperCase(), spawner.getKey().name().toUpperCase(), player.getName()));
                     Bukkit.dispatchCommand(Bukkit.getConsoleSender(), String.format("sgive %s %s 1", player.getName(), spawner.getKey().name().toUpperCase()));
-                    factionGeradores.withdrawAmountPlaced(spawner.getKey(), 1);
-                    factionGeradoresDataBase.save(factionGeradores);
+                    factionGenerators.withdrawAmountPlaced(spawner.getKey(), 1);
+                    factionGeneratorsDataBase.save(factionGenerators);
                     player.playSound(player.getLocation(), Sound.LEVEL_UP, 1.5F, 1.5F);
                     return;
                 }
@@ -115,10 +113,10 @@ public class GeradoresView extends View {
                         return;
                     }
 
-                    System.out.println(String.format("[GERADORES-LOG] A facção [%s] removeu %s x spawners de %s (%s)", factionGeradores.getFactionTag().toUpperCase(), spawner.getValue(), spawner.getKey().name().toUpperCase(), player.getName()));
+                    System.out.println(String.format("[GERADORES-LOG] A facção [%s] removeu %s x spawners de %s (%s)", factionGenerators.getFactionTag().toUpperCase(), spawner.getValue(), spawner.getKey().name().toUpperCase(), player.getName()));
                     Bukkit.dispatchCommand(Bukkit.getConsoleSender(), String.format("sgive %s %s %s", player.getName(), spawner.getKey().name().toUpperCase(), spawner.getValue()));
-                    factionGeradores.withdrawAmountPlaced(spawner.getKey(), spawner.getValue());
-                    factionGeradoresDataBase.save(factionGeradores);
+                    factionGenerators.withdrawAmountPlaced(spawner.getKey(), spawner.getValue());
+                    factionGeneratorsDataBase.save(factionGenerators);
                     player.playSound(player.getLocation(), Sound.LEVEL_UP, 1.5F, 1.5F);
                 }
             });
@@ -128,15 +126,15 @@ public class GeradoresView extends View {
     @Override
     protected void onOpen(@NotNull OpenViewContext context) {
 
-        FactionGeradores factionGeradores = context.get("factionGeradores");
+        FactionGenerators factionGenerators = context.get("factionGeradores");
 
-        factionGeradores.setOpen(true);
+        factionGenerators.setOpen(true);
     }
 
     @Override
     protected void onClose(@NotNull ViewContext context) {
-        FactionGeradores factionGeradores = context.get("factionGeradores");
+        FactionGenerators factionGenerators = context.get("factionGeradores");
 
-        factionGeradores.setOpen(false);
+        factionGenerators.setOpen(false);
     }
 }

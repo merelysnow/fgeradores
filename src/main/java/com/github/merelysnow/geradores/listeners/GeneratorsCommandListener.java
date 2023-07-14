@@ -1,9 +1,9 @@
 package com.github.merelysnow.geradores.listeners;
 
-import com.github.merelysnow.geradores.cache.FactionGeradoresCache;
-import com.github.merelysnow.geradores.data.FactionGeradores;
-import com.github.merelysnow.geradores.database.FactionGeradoresDataBase;
-import com.github.merelysnow.geradores.inventory.GeradoresView;
+import com.github.merelysnow.geradores.cache.FactionGeneratorsCache;
+import com.github.merelysnow.geradores.data.FactionGenerators;
+import com.github.merelysnow.geradores.database.FactionGeneratorsDataBase;
+import com.github.merelysnow.geradores.inventory.GeneratorsView;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.massivecraft.factions.Rel;
@@ -11,19 +11,16 @@ import com.massivecraft.factions.entity.Faction;
 import com.massivecraft.factions.entity.MPlayer;
 import lombok.RequiredArgsConstructor;
 import me.saiintbrisson.minecraft.ViewFrame;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
-import java.util.Map;
-
 @RequiredArgsConstructor
-public class GeradoresCommandListener implements Listener {
+public class GeneratorsCommandListener implements Listener {
 
-    private final FactionGeradoresCache factionGeradoresCache;
-    private final FactionGeradoresDataBase factionGeradoresDataBase;
+    private final FactionGeneratorsCache factionGeneratorsCache;
+    private final FactionGeneratorsDataBase factionGeneratorsDataBase;
     private final ViewFrame viewFrame;
 
     @EventHandler
@@ -47,26 +44,22 @@ public class GeradoresCommandListener implements Listener {
             }
 
             final Faction faction = mPlayer.getFaction();
-            final Map<EntityType, Integer> a = Maps.newHashMap();
 
-            a.put(EntityType.COW, 250); //apenas para testes
-            a.put(EntityType.IRON_GOLEM, 500); //apenas para testes
+            FactionGenerators factionGenerators = factionGeneratorsCache.get(faction.getTag());
 
-            FactionGeradores factionGeradores = factionGeradoresCache.get(faction.getTag());
+            if(factionGenerators == null) {
+                factionGenerators = new FactionGenerators(faction.getTag(), Maps.newHashMap(), false);
 
-            if(factionGeradores == null) {
-                factionGeradores = new FactionGeradores(faction.getTag(), a, false);
-
-                factionGeradoresDataBase.create(factionGeradores);
-                factionGeradoresCache.put(faction.getTag(), factionGeradores);
+                factionGeneratorsDataBase.create(factionGenerators);
+                factionGeneratorsCache.put(faction.getTag(), factionGenerators);
             }
 
-            if(factionGeradores.isOpen()) {
+            if(factionGenerators.isOpen()) {
                 player.sendMessage("§cOops! Já possui um jogador gerenciando os geradores armazenados.");
                 return;
             }
 
-            viewFrame.open(GeradoresView.class, player, ImmutableMap.of("factionGeradores", factionGeradores));
+            viewFrame.open(GeneratorsView.class, player, ImmutableMap.of("factionGeradores", factionGenerators));
         }
     }
 }

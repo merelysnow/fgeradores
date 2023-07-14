@@ -1,7 +1,7 @@
 package com.github.merelysnow.geradores.database;
 
-import com.github.merelysnow.geradores.data.FactionGeradores;
-import com.github.merelysnow.geradores.database.adapter.FactionGeradoresAdapter;
+import com.github.merelysnow.geradores.data.FactionGenerators;
+import com.github.merelysnow.geradores.database.adapter.FactionGeneratorsAdapter;
 import com.github.merelysnow.geradores.database.connection.RepositoryProvider;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -12,13 +12,13 @@ import org.bukkit.plugin.Plugin;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
-public class FactionGeradoresDataBase extends RepositoryProvider {
+public class FactionGeneratorsDataBase extends RepositoryProvider {
 
     private static final String TABLE_NAME = "fgeradores_table";
     private static final Gson GSON = new GsonBuilder().create();
     private SQLExecutor executor;
 
-    public FactionGeradoresDataBase(Plugin instance) {
+    public FactionGeneratorsDataBase(Plugin instance) {
         super(instance);
         prepare();
         createTable();
@@ -38,41 +38,41 @@ public class FactionGeradoresDataBase extends RepositoryProvider {
                 ");");
     }
 
-    public Set<FactionGeradores> selectMany() {
+    public Set<FactionGenerators> selectMany() {
         return executor.resultManyQuery(
                 "SELECT * FROM " + TABLE_NAME, simpleStatement -> {
-                }, FactionGeradoresAdapter.class);
+                }, FactionGeneratorsAdapter.class);
     }
 
-    public void save(FactionGeradores factionGeradores) {
+    public void save(FactionGenerators factionGenerators) {
         CompletableFuture.runAsync(() -> {
             executor.updateQuery("UPDATE " + TABLE_NAME + " SET storagedSpawners = ? WHERE factionTag = ?", simpleStatement -> {
-                simpleStatement.set(1, GSON.toJson(factionGeradores.getStoragedSpawners()));
-                simpleStatement.set(2, factionGeradores.getFactionTag());
+                simpleStatement.set(1, GSON.toJson(factionGenerators.getStoragedSpawners()));
+                simpleStatement.set(2, factionGenerators.getFactionTag());
             });
         });
     }
 
-    public void create(FactionGeradores factionGeradores) {
+    public void create(FactionGenerators factionGenerators) {
         CompletableFuture.runAsync(() -> {
             executor.updateQuery("INSERT INTO " + TABLE_NAME + " VALUES(?,?)", simpleStatement -> {
-                simpleStatement.set(1, factionGeradores.getFactionTag());
-                simpleStatement.set(2, GSON.toJson(factionGeradores.getStoragedSpawners()));
+                simpleStatement.set(1, factionGenerators.getFactionTag());
+                simpleStatement.set(2, GSON.toJson(factionGenerators.getStoragedSpawners()));
             });
         });
     }
 
-    public FactionGeradores load(String factionID) {
+    public FactionGenerators load(String factionID) {
         return executor.resultOneQuery(
                 "SELECT * FROM " + TABLE_NAME + " WHERE factionTag = ?",
                 simpleStatement -> simpleStatement.set(1, factionID),
-                FactionGeradoresAdapter.class);
+                FactionGeneratorsAdapter.class);
     }
 
-    public void delete(FactionGeradores factionGeradores) {
+    public void delete(FactionGenerators factionGenerators) {
         CompletableFuture.runAsync(() ->
                 executor.updateQuery("DELETE FROM " + TABLE_NAME + " WHERE factionTag = ?", simpleStatement -> {
-                    simpleStatement.set(1, factionGeradores.getFactionTag());
+                    simpleStatement.set(1, factionGenerators.getFactionTag());
                 }));
     }
 }
