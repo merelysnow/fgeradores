@@ -9,3 +9,5 @@ final RegisteredServiceProvider<FactionGeneratorsApi> registration = servicesMan
 final FactionGeneratorsApi factionGeneratorsApi = registration.getProvider();
 ````
 
+Com isso, é possivel acessar o metodo ````getFactionByTag()```` que retornará o objeto que salva os spawners armazenados.
+
