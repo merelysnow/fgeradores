@@ -1,4 +1,4 @@
-# fgeradores
+# FGeradores
 Sistema de armazenamento de spawners para *Factions* com suporte a *todos* os spawners da versão *1.8.9*
 
 ### Como usar a API?
