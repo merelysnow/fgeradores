@@ -44,7 +44,6 @@ public class GeneratorsCommandListener implements Listener {
             }
 
             final Faction faction = mPlayer.getFaction();
-
             FactionGenerators factionGenerators = factionGeneratorsCache.get(faction.getTag());
 
             if(factionGenerators == null) {

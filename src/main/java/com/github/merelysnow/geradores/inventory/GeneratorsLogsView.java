@@ -25,7 +25,7 @@ public class GeneratorsLogsView extends PaginatedView<GeneratorsLogs> {
         setSource(ctx -> Lists.newArrayList(generatorsLogsDataBase.selectMany(ctx.get("factionTag"))));
         setLayout("XXXXXXXXX",
                 "XOOOOOOOX",
-                "XOOOOOOOX",
+                "<OOOOOOO>",
                 "XOOOOOOOX",
                 "XOOOOOOOX",
                 "XXXXXXXXX");
