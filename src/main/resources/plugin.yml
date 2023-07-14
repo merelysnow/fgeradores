@@ -3,3 +3,4 @@ version: 1.0.0
 main: com.github.merelysnow.geradores.FGeradoresPlugin
 depend:
   - Factions
+  - InventoryFramework

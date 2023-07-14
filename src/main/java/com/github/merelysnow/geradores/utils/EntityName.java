@@ -1,10 +1,13 @@
 package com.github.merelysnow.geradores.utils;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 
 import java.util.Arrays;
 
+@AllArgsConstructor
 public enum EntityName {
 	AREA_EFFECT_CLOUD("Área de Efeito de Poção"),
 	ARMOR_STAND("Suporte para Armaduras"),
@@ -116,8 +119,8 @@ public enum EntityName {
 
 	private final String name;
 
-	private EntityName(String name) {
-		this.name = name;
+	public String getName() {
+		return name;
 	}
 
 	public static EntityName valueOf(Entity entity) {
@@ -128,11 +131,11 @@ public enum EntityName {
 		return valueOf(entityType.name());
 	}
 
-	public String getName() {
-		return this.name;
-	}
-
-	public String toString() {
-		return this.name;
+	public static EntityType fromTranslated(String string) {
+		return EntityType.valueOf(Arrays.stream(values())
+				.filter(context -> context.getName().equalsIgnoreCase(string))
+				.findFirst()
+				.orElse(null)
+				.name());
 	}
 }

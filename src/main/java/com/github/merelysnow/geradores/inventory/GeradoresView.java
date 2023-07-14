@@ -6,6 +6,7 @@ import com.github.merelysnow.geradores.utils.EntityName;
 import com.github.merelysnow.geradores.utils.InventoryUtil;
 import com.github.merelysnow.geradores.utils.SkullBuilder;
 import com.github.merelysnow.geradores.utils.item.ItemStackBuilder;
+import com.google.common.collect.Maps;
 import me.saiintbrisson.minecraft.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -17,6 +18,7 @@ import org.jetbrains.annotations.NotNull;
 import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class GeradoresView extends View {
@@ -43,39 +45,46 @@ public class GeradoresView extends View {
         final FactionGeradores factionGeradores = context.get("factionGeradores");
 
         context.slot(13, new ItemStackBuilder(Material.REDSTONE_COMPARATOR)
-                .displayName("§aArmazenar todos")
-                .lore("§7Clique aqui para armazenar todos os",
-                        "§7spawners do seu inventario.")
-                .build())
+                        .displayName("§aArmazenar todos")
+                        .lore("§7Clique aqui para armazenar todos os",
+                                "§7spawners do seu inventario.")
+                        .build())
                 .onClick(event -> {
 
                     final Player player = event.getPlayer();
-
                     context.close();
 
                     Arrays.stream(player.getInventory().getContents())
-                            .filter(itemStack -> itemStack != null)
+                            .filter(Objects::nonNull)
                             .filter(itemStack -> itemStack.getType() == Material.MOB_SPAWNER)
                             .forEach(itemStack -> {
                                 final ItemStackBuilder itemStackBuilder = new ItemStackBuilder(itemStack);
 
-                                if(itemStackBuilder.getLore() == null) {
+                                if (itemStackBuilder.getLore() == null) {
                                     return;
                                 }
 
-                                for(String line : itemStackBuilder.getLore()) {
-                                    System.out.println(line.split("Tipo: ")[0]);
-                                }
+                                itemStackBuilder.getLore()
+                                        .stream()
+                                        .filter(line -> line.contains("Tipo: "))
+                                        .forEach(line -> {
+                                            final String cleanLine = line.replaceAll("§[a-fA-F0-9]", "");
+                                            final String[] splitString = cleanLine.split("Tipo: ");
+                                            final String spawnerType = cleanLine.length() > 1 ? splitString[1] : "";
 
-                                //TODO terminar isso aqui
+                                            System.out.println(String.format("[GERADORES-LOG] A facção [%s] armazenou %s x spawner de %s (%s)", factionGeradores.getFactionTag().toUpperCase(), itemStack.getAmount(), EntityName.fromTranslated(spawnerType).name().toUpperCase(), player.getName()));
+                                            factionGeradores.addAmountPlaced(EntityName.fromTranslated(spawnerType), itemStack.getAmount());
+                                            InventoryUtil.removeItem(player, itemStack, itemStack.getAmount());
+                                        });
                             });
+
+                    player.playSound(player.getLocation(), Sound.LEVEL_UP, 1.5F, 1.5F);
                 });
 
-        for(Map.Entry<EntityType, Integer> spawner : factionGeradores.getStoragedSpawners().entrySet()
-                .stream().filter(entry -> entry.getValue() > 0).collect(Collectors.toList())) {
+        for (Map.Entry<EntityType, Integer> spawner : factionGeradores.getStoragedSpawners().entrySet()) {
             context.availableSlot().withItem(new SkullBuilder()
                     .setOwner("MHF_" + spawner.getKey().name().toUpperCase())
-                    .displayName("§a" + NumberFormat.getInstance().format(spawner.getValue()) + "x gerador(es) de " + EntityName.valueOf(spawner.getKey()))
+                    .displayName("§a" + NumberFormat.getInstance().format(spawner.getValue()) + "x gerador(es) de " + EntityName.valueOf(spawner.getKey()).getName())
 
                     .lore("§fBotão esquerdo: §7Coletar 1 gerador.",
                             "§fBotão direito: §7Coletar todos os geradores.")
@@ -85,14 +94,14 @@ public class GeradoresView extends View {
                 final Player player = event.getPlayer();
                 context.close();
 
-                if(event.isLeftClick()) {
+                if (event.isLeftClick()) {
 
-                    if(InventoryUtil.isFull(player)) {
+                    if (InventoryUtil.isFull(player)) {
                         player.sendMessage("§cEsvazie o seu inventario.");
                         return;
                     }
 
-                    System.out.println(String.format("[GERADORES-LOG] A facção [%s] removeu 1x spawner de %s (%s)", factionGeradores.getFactionTag().toUpperCase(),  spawner.getKey().name().toUpperCase(), player.getName()));
+                    System.out.println(String.format("[GERADORES-LOG] A facção [%s] removeu 1x spawner de %s (%s)", factionGeradores.getFactionTag().toUpperCase(), spawner.getKey().name().toUpperCase(), player.getName()));
                     Bukkit.dispatchCommand(Bukkit.getConsoleSender(), String.format("sgive %s %s 1", player.getName(), spawner.getKey().name().toUpperCase()));
                     factionGeradores.withdrawAmountPlaced(spawner.getKey(), 1);
                     factionGeradoresDataBase.save(factionGeradores);
@@ -100,8 +109,8 @@ public class GeradoresView extends View {
                     return;
                 }
 
-                if(event.isRightClick()) {
-                    if(InventoryUtil.isFull(player)) {
+                if (event.isRightClick()) {
+                    if (InventoryUtil.isFull(player)) {
                         player.sendMessage("§cEsvazie o seu inventario.");
                         return;
                     }
