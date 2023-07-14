@@ -60,6 +60,24 @@ public class GeneratorsCommandListener implements Listener {
             }
 
             viewFrame.open(GeneratorsView.class, player, ImmutableMap.of("factionGeradores", factionGenerators));
+            return;
+        }
+
+        if(message.startsWith("/f desfazer")) {
+
+            final Faction faction = mPlayer.getFaction();
+            final FactionGenerators factionGenerators = factionGeneratorsCache.get(faction.getTag());
+
+            if(factionGenerators == null) {
+                return;
+            }
+
+            if(factionGenerators.getStoragedSpawners().isEmpty()) {
+                return;
+            }
+
+            e.setCancelled(true);
+            player.sendMessage("§cVocê não pode desfazer a facção com spawners armazenados.");
         }
     }
 }
