@@ -1,7 +1,7 @@
 # fgeradores
 Sistema de armazenamento de spawners para *Factions* com suporte a *todos* os spawners da versão *1.8.9*
 
-### Como usar?
+### Como usar a API?
 Após adicionar a jar do plugin em seu projeto, instancie a API do FGeradores:
 ````java
 ServicesManager servicesManager = Bukkit.getServicesManager();
