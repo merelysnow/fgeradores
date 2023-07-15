@@ -19,6 +19,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.text.NumberFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class GeneratorsView extends View {
 
@@ -94,7 +95,8 @@ public class GeneratorsView extends View {
                     player.playSound(player.getLocation(), Sound.LEVEL_UP, 1.5F, 1.5F);
                 });
 
-        for (Map.Entry<EntityType, Integer> spawner : factionGenerators.getStoragedSpawners().entrySet()) {
+        for (Map.Entry<EntityType, Integer> spawner : factionGenerators.getStoragedSpawners().entrySet()
+                .stream().filter(entry -> entry.getValue() > 0).collect(Collectors.toList())) {
             context.availableSlot().withItem(new SkullBuilder()
                     .setOwner("MHF_" + spawner.getKey().name().toUpperCase())
                     .displayName("§a" + NumberFormat.getInstance().format(spawner.getValue()) + "x gerador(es) de " + EntityName.valueOf(spawner.getKey()).getName())

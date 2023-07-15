@@ -21,7 +21,7 @@ public class FactionGenerators {
     public void withdrawAmountPlaced(EntityType type, int amount) {
         storagedSpawners.merge(type, amount, (oldValue, newValue) -> {
             if ((oldValue - newValue) <= 0) {
-                return storagedSpawners.remove(type);
+                return 0;
             }
 
             return oldValue - newValue;
