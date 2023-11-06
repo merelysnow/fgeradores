@@ -20,8 +20,8 @@ public class GeneratorsLogsView extends PaginatedView<GeneratorsLogs> {
 
     public GeneratorsLogsView(GeneratorsLogsDataBase generatorsLogsDataBase) {
         super(6, "Logs da facção");
-
         this.generatorsLogsDataBase = generatorsLogsDataBase;
+
         setSource(ctx -> Lists.newArrayList(generatorsLogsDataBase.selectMany(ctx.get("factionTag"))));
         setLayout("XXXXXXXXX",
                 "XOOOOOOOX",
@@ -29,7 +29,10 @@ public class GeneratorsLogsView extends PaginatedView<GeneratorsLogs> {
                 "XOOOOOOOX",
                 "XOOOOOOOX",
                 "XXXXXXXXX");
+
         setCancelOnClick(true);
+        setCancelOnDrag(true);
+        setCancelOnDrop(true);
 
         setPreviousPageItem((context, item) -> item.withItem(context.hasPreviousPage() ? new ItemStackBuilder(Material.ARROW)
                 .displayName("§cPag. anterior")
@@ -38,6 +41,7 @@ public class GeneratorsLogsView extends PaginatedView<GeneratorsLogs> {
                 .displayName("§aProx. pagina")
                 .build() : null));
     }
+
     @Override
     protected void onItemRender(@NotNull PaginatedViewSlotContext<GeneratorsLogs> paginatedViewSlotContext, @NotNull ViewItem viewItem, @NotNull GeneratorsLogs generatorsLogs) {
 

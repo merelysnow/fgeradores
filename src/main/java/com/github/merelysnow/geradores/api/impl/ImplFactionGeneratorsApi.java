@@ -7,8 +7,6 @@ import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Optional;
-
 @RequiredArgsConstructor
 public class ImplFactionGeneratorsApi implements FactionGeneratorsApi {
 

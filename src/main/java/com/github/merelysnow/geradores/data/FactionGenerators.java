@@ -1,18 +1,21 @@
 package com.github.merelysnow.geradores.data;
 
-import lombok.AllArgsConstructor;
+import com.google.common.collect.Maps;
+import lombok.Builder;
 import lombok.Data;
 import org.bukkit.entity.EntityType;
 
 import java.util.Map;
 
-@AllArgsConstructor
+@Builder
 @Data
 public class FactionGenerators {
 
     private final String factionTag;
-    private Map<EntityType, Integer> storagedSpawners;
-    private boolean open;
+    @Builder.Default
+    private Map<EntityType, Integer> storagedSpawners = Maps.newHashMap();
+    @Builder.Default
+    private boolean open = false;
 
     public void addAmountPlaced(EntityType type, int amount) {
         storagedSpawners.merge(type, amount, Integer::sum);

@@ -46,7 +46,7 @@ public final class InventoryUtil {
 
     public boolean isFullWithArmor(Player player) {
         final PlayerInventory inventory = player.getInventory();
-        final ItemStack[][] itemStacks = new ItemStack[][] {inventory.getContents(), inventory.getArmorContents()};
+        final ItemStack[][] itemStacks = new ItemStack[][]{inventory.getContents(), inventory.getArmorContents()};
 
         final List<ItemStack> itemStackList =
                 Stream.of(itemStacks).flatMap(Stream::of).collect(Collectors.toList());

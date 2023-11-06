@@ -5,7 +5,6 @@ import com.github.merelysnow.geradores.data.FactionGenerators;
 import com.github.merelysnow.geradores.database.FactionGeneratorsDataBase;
 import com.github.merelysnow.geradores.inventory.GeneratorsView;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Maps;
 import com.massivecraft.factions.Rel;
 import com.massivecraft.factions.entity.Faction;
 import com.massivecraft.factions.entity.MPlayer;
@@ -30,15 +29,15 @@ public class GeneratorsCommandListener implements Listener {
         final MPlayer mPlayer = MPlayer.get(player);
         final String message = e.getMessage();
 
-        if(message.startsWith("/f geradores")) {
+        if (message.startsWith("/f geradores")) {
             e.setCancelled(true);
 
-            if(!mPlayer.hasFaction()) {
+            if (!mPlayer.hasFaction()) {
                 player.sendMessage("§cVocê precisa possuir uma facção.");
                 return;
             }
 
-            if(mPlayer.getRole().isLessThan(Rel.OFFICER)) {
+            if (mPlayer.getRole().isLessThan(Rel.OFFICER)) {
                 player.sendMessage("§cVocê precisa ser capitão ou superior para executar esse comando.");
                 return;
             }
@@ -46,14 +45,14 @@ public class GeneratorsCommandListener implements Listener {
             final Faction faction = mPlayer.getFaction();
             FactionGenerators factionGenerators = factionGeneratorsCache.get(faction.getTag());
 
-            if(factionGenerators == null) {
-                factionGenerators = new FactionGenerators(faction.getTag(), Maps.newHashMap(), false);
+            if (factionGenerators == null) {
+                factionGenerators = FactionGenerators.builder().factionTag(faction.getTag()).build();
 
                 factionGeneratorsDataBase.create(factionGenerators);
                 factionGeneratorsCache.put(faction.getTag(), factionGenerators);
             }
 
-            if(factionGenerators.isOpen()) {
+            if (factionGenerators.isOpen()) {
                 player.sendMessage("§cOops! Já possui um jogador gerenciando os geradores armazenados.");
                 return;
             }

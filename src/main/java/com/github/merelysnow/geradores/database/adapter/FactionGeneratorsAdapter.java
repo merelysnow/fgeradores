@@ -19,10 +19,15 @@ public class FactionGeneratorsAdapter implements SQLResultAdapter<FactionGenerat
     @Override
     public FactionGenerators adaptResult(SimpleResultSet resultSet) {
 
-        final Type type = new TypeToken<HashMap<EntityType, Integer>>() {}.getType();
+        final Type type = new TypeToken<HashMap<EntityType, Integer>>() {
+        }.getType();
         final String factionTag = resultSet.get("factionTag");
         final Map<EntityType, Integer> storagedSpawners = GSON.fromJson((String) resultSet.get("storagedSpawners"), type);
 
-        return new FactionGenerators(factionTag, storagedSpawners, false);
+        return FactionGenerators.builder()
+                .factionTag(factionTag)
+                .storagedSpawners(storagedSpawners)
+                .open(false)
+                .build();
     }
 }

@@ -34,7 +34,8 @@ public class ItemStackBuilder implements ItemStackBase<ItemStackBuilder> {
 
     protected NBTTagCompound nbt;
 
-    public ItemStackBuilder() {}
+    public ItemStackBuilder() {
+    }
 
     public ItemStackBuilder(Material material) {
         final ItemStack itemStack = new ItemStack(material);

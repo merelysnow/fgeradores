@@ -3,7 +3,6 @@ package com.github.merelysnow.geradores.listeners;
 import com.github.merelysnow.geradores.cache.FactionGeneratorsCache;
 import com.github.merelysnow.geradores.data.FactionGenerators;
 import com.github.merelysnow.geradores.database.FactionGeneratorsDataBase;
-import com.google.common.collect.Maps;
 import com.massivecraft.factions.entity.Faction;
 import com.massivecraft.factions.event.EventFactionsCreate;
 import com.massivecraft.factions.event.EventFactionsDisband;
@@ -19,31 +18,28 @@ public class GeneratorsFactionListener implements Listener {
     private final FactionGeneratorsDataBase factionGeneratorsDataBase;
 
     @EventHandler
-    private void onCreate(EventFactionsCreate e) {
+    private void onCreate(EventFactionsCreate event) {
 
-        FactionGenerators factionGenerators = factionGeneratorsDataBase.load(e.getFactionTag());
+        FactionGenerators factionGenerators = factionGeneratorsDataBase.load(event.getFactionTag());
 
-        if(factionGenerators == null) {
-            factionGenerators = new FactionGenerators(e.getFactionTag(), Maps.newHashMap(), false);
+        if (factionGenerators == null) {
+            factionGenerators = FactionGenerators.builder().factionTag(event.getFactionTag()).build();
 
             factionGeneratorsDataBase.create(factionGenerators);
-            factionGeneratorsCache.put(e.getFactionTag(), factionGenerators);
+            factionGeneratorsCache.put(event.getFactionTag(), factionGenerators);
         }
     }
 
     @EventHandler
-    private void onDisband(EventFactionsDisband e) {
+    private void onDisband(EventFactionsDisband event) {
 
-        final Player player = e.getMPlayer().getPlayer();
-        final Faction faction = e.getFaction();
+        final Player player = event.getMPlayer().getPlayer();
+        final Faction faction = event.getFaction();
         final FactionGenerators factionGenerators = factionGeneratorsDataBase.load(faction.getTag());
+        if (factionGenerators == null) return;
 
-        if(factionGenerators == null) {
-            return;
-        }
-
-        if(!factionGenerators.getStoragedSpawners().isEmpty()) {
-            e.setCancelled(true);
+        if (factionGenerators.getStoragedSpawners().values().stream().mapToDouble(a -> a).sum() > 0) {
+            event.setCancelled(true);
             player.sendMessage("§cVocê não pode desfazer a facção com spawners armazenados.");
             return;
         }

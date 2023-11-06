@@ -9,7 +9,9 @@ import com.github.merelysnow.geradores.utils.InventoryUtil;
 import com.github.merelysnow.geradores.utils.SkullBuilder;
 import com.github.merelysnow.geradores.utils.item.ItemStackBuilder;
 import com.google.common.collect.ImmutableMap;
-import me.saiintbrisson.minecraft.*;
+import me.saiintbrisson.minecraft.OpenViewContext;
+import me.saiintbrisson.minecraft.View;
+import me.saiintbrisson.minecraft.ViewContext;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -52,7 +54,7 @@ public class GeneratorsView extends View {
                                 "§7movimentações feitas no /f geradores.")
                         .build())
                 .onClick(event -> {
-                         context.open(GeneratorsLogsView.class, ImmutableMap.of("factionTag", factionGenerators.getFactionTag()));
+                    context.open(GeneratorsLogsView.class, ImmutableMap.of("factionTag", factionGenerators.getFactionTag()));
                 });
 
         context.slot(13, new ItemStackBuilder(Material.REDSTONE_COMPARATOR)
@@ -61,7 +63,6 @@ public class GeneratorsView extends View {
                                 "§7spawners do seu inventario.")
                         .build())
                 .onClick(event -> {
-
                     final Player player = event.getPlayer();
                     context.close();
 
@@ -110,7 +111,6 @@ public class GeneratorsView extends View {
                 context.close();
 
                 if (event.isLeftClick()) {
-
                     if (InventoryUtil.isFull(player)) {
                         player.sendMessage("§cEsvazie o seu inventario.");
                         return;
@@ -145,15 +145,14 @@ public class GeneratorsView extends View {
 
     @Override
     protected void onOpen(@NotNull OpenViewContext context) {
-
-        FactionGenerators factionGenerators = context.get("factionGeradores");
+        final FactionGenerators factionGenerators = context.get("factionGeradores");
 
         factionGenerators.setOpen(true);
     }
 
     @Override
     protected void onClose(@NotNull ViewContext context) {
-        FactionGenerators factionGenerators = context.get("factionGeradores");
+        final FactionGenerators factionGenerators = context.get("factionGeradores");
 
         factionGenerators.setOpen(false);
     }
