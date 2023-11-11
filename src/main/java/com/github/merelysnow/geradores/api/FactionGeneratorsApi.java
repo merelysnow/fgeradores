@@ -14,4 +14,13 @@ public interface FactionGeneratorsApi {
      */
     @Nullable
     FactionGenerators getFactionByTag(@NotNull String factionTag);
+
+    /**
+     * Saves the provided FactionGenerators instance, ensuring its data is persisted.
+     * The FactionGenerators object represents a collection of generators used to create factions.
+     *
+     * @param factionGenerators The FactionGenerators object to be saved. Must not be null.
+     * @throws IllegalArgumentException If the provided factionGenerators parameter is null.
+     */
+    void saveFactionGenerator(@NotNull FactionGenerators factionGenerators);
 }

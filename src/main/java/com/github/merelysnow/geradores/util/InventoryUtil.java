@@ -1,4 +1,4 @@
-package com.github.merelysnow.geradores.utils;
+package com.github.merelysnow.geradores.util;
 
 import com.google.common.collect.Maps;
 import lombok.experimental.UtilityClass;

@@ -1,4 +1,4 @@
-package com.github.merelysnow.geradores.utils;
+package com.github.merelysnow.geradores.util;
 
 import lombok.AllArgsConstructor;
 import org.bukkit.entity.Entity;

@@ -1,14 +1,14 @@
 package com.github.merelysnow.geradores;
 
 import com.github.merelysnow.geradores.api.FactionGeneratorsApi;
-import com.github.merelysnow.geradores.api.impl.ImplFactionGeneratorsApi;
+import com.github.merelysnow.geradores.api.impl.FactionGeneratorsApiImpl;
 import com.github.merelysnow.geradores.cache.FactionGeneratorsCache;
-import com.github.merelysnow.geradores.database.FactionGeneratorsDataBase;
-import com.github.merelysnow.geradores.database.GeneratorsLogsDataBase;
 import com.github.merelysnow.geradores.inventory.GeneratorsLogsView;
 import com.github.merelysnow.geradores.inventory.GeneratorsView;
-import com.github.merelysnow.geradores.listeners.GeneratorsCommandListener;
-import com.github.merelysnow.geradores.listeners.GeneratorsFactionListener;
+import com.github.merelysnow.geradores.listener.GeneratorsCommandListener;
+import com.github.merelysnow.geradores.listener.GeneratorsFactionListener;
+import com.github.merelysnow.geradores.repository.FactionGeneratorsRepository;
+import com.github.merelysnow.geradores.repository.GeneratorsLogsRepository;
 import me.saiintbrisson.minecraft.ViewFrame;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.ServicePriority;
@@ -21,15 +21,15 @@ public class FGeradoresPlugin extends JavaPlugin {
         saveDefaultConfig();
 
         final FactionGeneratorsCache factionGeneratorsCache = new FactionGeneratorsCache();
-        final FactionGeneratorsDataBase factionGeneratorsDataBase = new FactionGeneratorsDataBase(this);
-        final GeneratorsLogsDataBase generatorsLogsDataBase = new GeneratorsLogsDataBase(this);
-        final ViewFrame viewFrame = ViewFrame.of(this, new GeneratorsView(factionGeneratorsDataBase, generatorsLogsDataBase), new GeneratorsLogsView(generatorsLogsDataBase)).register();
+        final FactionGeneratorsRepository factionGeneratorsRepository = new FactionGeneratorsRepository(this);
+        final GeneratorsLogsRepository generatorsLogsRepository = new GeneratorsLogsRepository(this);
 
-        factionGeneratorsDataBase.selectMany().forEach(geradores -> factionGeneratorsCache.put(geradores.getFactionTag(), geradores));
+        final ViewFrame viewFrame = ViewFrame.of(this, new GeneratorsView(factionGeneratorsRepository, generatorsLogsRepository), new GeneratorsLogsView(generatorsLogsRepository)).register();
+        factionGeneratorsRepository.selectMany().forEach(geradores -> factionGeneratorsCache.put(geradores.getFactionTag(), geradores));
 
-        getServer().getPluginManager().registerEvents(new GeneratorsCommandListener(factionGeneratorsCache, factionGeneratorsDataBase, viewFrame), this);
-        getServer().getPluginManager().registerEvents(new GeneratorsFactionListener(factionGeneratorsCache, factionGeneratorsDataBase), this);
+        getServer().getPluginManager().registerEvents(new GeneratorsCommandListener(factionGeneratorsCache, factionGeneratorsRepository, viewFrame), this);
+        getServer().getPluginManager().registerEvents(new GeneratorsFactionListener(factionGeneratorsCache, factionGeneratorsRepository), this);
 
-        Bukkit.getServicesManager().register(FactionGeneratorsApi.class, new ImplFactionGeneratorsApi(factionGeneratorsCache), this, ServicePriority.Highest);
+        Bukkit.getServicesManager().register(FactionGeneratorsApi.class, new FactionGeneratorsApiImpl(factionGeneratorsCache, factionGeneratorsRepository), this, ServicePriority.Highest);
     }
 }

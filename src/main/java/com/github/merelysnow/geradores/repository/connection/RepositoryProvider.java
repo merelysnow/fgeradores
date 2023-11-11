@@ -1,4 +1,4 @@
-package com.github.merelysnow.geradores.database.connection;
+package com.github.merelysnow.geradores.repository.connection;
 
 import com.henryfabio.sqlprovider.connector.SQLConnector;
 import com.henryfabio.sqlprovider.connector.type.SQLDatabaseType;

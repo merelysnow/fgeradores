@@ -2,12 +2,12 @@ package com.github.merelysnow.geradores.inventory;
 
 import com.github.merelysnow.geradores.data.FactionGenerators;
 import com.github.merelysnow.geradores.data.GeneratorsLogs;
-import com.github.merelysnow.geradores.database.FactionGeneratorsDataBase;
-import com.github.merelysnow.geradores.database.GeneratorsLogsDataBase;
-import com.github.merelysnow.geradores.utils.EntityName;
-import com.github.merelysnow.geradores.utils.InventoryUtil;
-import com.github.merelysnow.geradores.utils.SkullBuilder;
-import com.github.merelysnow.geradores.utils.item.ItemStackBuilder;
+import com.github.merelysnow.geradores.repository.FactionGeneratorsRepository;
+import com.github.merelysnow.geradores.repository.GeneratorsLogsRepository;
+import com.github.merelysnow.geradores.util.EntityName;
+import com.github.merelysnow.geradores.util.InventoryUtil;
+import com.github.merelysnow.geradores.util.SkullBuilder;
+import com.github.merelysnow.geradores.util.item.ItemStackBuilder;
 import com.google.common.collect.ImmutableMap;
 import me.saiintbrisson.minecraft.OpenViewContext;
 import me.saiintbrisson.minecraft.View;
@@ -25,14 +25,14 @@ import java.util.stream.Collectors;
 
 public class GeneratorsView extends View {
 
-    private final FactionGeneratorsDataBase factionGeneratorsDataBase;
-    private final GeneratorsLogsDataBase generatorsLogsDataBase;
+    private final FactionGeneratorsRepository factionGeneratorsRepository;
+    private final GeneratorsLogsRepository generatorsLogsRepository;
 
-    public GeneratorsView(FactionGeneratorsDataBase factionGeneratorsDataBase, GeneratorsLogsDataBase generatorsLogsDataBase) {
+    public GeneratorsView(FactionGeneratorsRepository factionGeneratorsRepository, GeneratorsLogsRepository generatorsLogsRepository) {
         super(6, "Geradores da facção");
 
-        this.factionGeneratorsDataBase = factionGeneratorsDataBase;
-        this.generatorsLogsDataBase = generatorsLogsDataBase;
+        this.factionGeneratorsRepository = factionGeneratorsRepository;
+        this.generatorsLogsRepository = generatorsLogsRepository;
         setLayout("XXXXXXXXX",
                 "XXXXXXXXX",
                 "XXXXXXXXX",
@@ -41,6 +41,8 @@ public class GeneratorsView extends View {
                 "XXXXXXXXX");
 
         setCancelOnClick(true);
+        setCancelOnDrag(true);
+        setCancelOnDrop(true);
     }
 
     @Override
@@ -86,13 +88,13 @@ public class GeneratorsView extends View {
                                             final GeneratorsLogs generatorsLogs = new GeneratorsLogs(UUID.randomUUID(), factionGenerators.getFactionTag(), EntityName.fromTranslated(spawnerType), itemStack.getAmount(), player.getName(), "ADD", new Date());
 
                                             System.out.println(String.format("[GERADORES-LOG] A facção [%s] armazenou %s x spawner de %s (%s)", factionGenerators.getFactionTag().toUpperCase(), itemStack.getAmount(), EntityName.fromTranslated(spawnerType).name().toUpperCase(), player.getName()));
-                                            generatorsLogsDataBase.create(generatorsLogs);
+                                            generatorsLogsRepository.create(generatorsLogs);
                                             factionGenerators.addAmountPlaced(EntityName.fromTranslated(spawnerType), itemStack.getAmount());
                                             InventoryUtil.removeItem(player, itemStack, itemStack.getAmount());
                                         });
                             });
 
-                    factionGeneratorsDataBase.save(factionGenerators);
+                    factionGeneratorsRepository.save(factionGenerators);
                     player.playSound(player.getLocation(), Sound.LEVEL_UP, 1.5F, 1.5F);
                 });
 
@@ -108,7 +110,7 @@ public class GeneratorsView extends View {
             ).onClick(event -> {
 
                 final Player player = event.getPlayer();
-                context.close();
+                player.closeInventory();
 
                 if (event.isLeftClick()) {
                     if (InventoryUtil.isFull(player)) {
@@ -116,10 +118,10 @@ public class GeneratorsView extends View {
                         return;
                     }
 
-                    System.out.println(String.format("[GERADORES-LOG] A facção [%s] removeu 1x spawner de %s (%s)", factionGenerators.getFactionTag().toUpperCase(), spawner.getKey().name().toUpperCase(), player.getName()));
+                    System.out.printf("[GERADORES-LOG] A facção [%s] removeu 1x spawner de %s (%s)%n", factionGenerators.getFactionTag().toUpperCase(), spawner.getKey().name().toUpperCase(), player.getName());
                     Bukkit.dispatchCommand(Bukkit.getConsoleSender(), String.format("sgive %s %s 1", player.getName(), spawner.getKey().name().toUpperCase()));
                     factionGenerators.withdrawAmountPlaced(spawner.getKey(), 1);
-                    factionGeneratorsDataBase.save(factionGenerators);
+                    factionGeneratorsRepository.save(factionGenerators);
                     player.playSound(player.getLocation(), Sound.LEVEL_UP, 1.5F, 1.5F);
                     return;
                 }
@@ -132,11 +134,11 @@ public class GeneratorsView extends View {
 
                     final GeneratorsLogs generatorsLogs = new GeneratorsLogs(UUID.randomUUID(), factionGenerators.getFactionTag(), spawner.getKey(), spawner.getValue(), player.getName(), "REMOVE", new Date());
 
-                    System.out.println(String.format("[GERADORES-LOG] A facção [%s] removeu %s x spawners de %s (%s)", factionGenerators.getFactionTag().toUpperCase(), spawner.getValue(), spawner.getKey().name().toUpperCase(), player.getName()));
+                    System.out.printf("[GERADORES-LOG] A facção [%s] removeu %s x spawners de %s (%s)%n", factionGenerators.getFactionTag().toUpperCase(), spawner.getValue(), spawner.getKey().name().toUpperCase(), player.getName());
                     Bukkit.dispatchCommand(Bukkit.getConsoleSender(), String.format("sgive %s %s %s", player.getName(), spawner.getKey().name().toUpperCase(), spawner.getValue()));
                     factionGenerators.withdrawAmountPlaced(spawner.getKey(), spawner.getValue());
-                    factionGeneratorsDataBase.save(factionGenerators);
-                    generatorsLogsDataBase.create(generatorsLogs);
+                    factionGeneratorsRepository.save(factionGenerators);
+                    generatorsLogsRepository.create(generatorsLogs);
                     player.playSound(player.getLocation(), Sound.LEVEL_UP, 1.5F, 1.5F);
                 }
             });

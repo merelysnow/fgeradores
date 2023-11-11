@@ -6,7 +6,7 @@
  * Spring, Inc (github.com/rede-spring)
  */
 
-package com.github.merelysnow.geradores.utils.item;
+package com.github.merelysnow.geradores.util.item;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.util.concurrent.Atomics;

@@ -6,9 +6,9 @@
  * Spring, Inc (github.com/rede-spring)
  */
 
-package com.github.merelysnow.geradores.utils;
+package com.github.merelysnow.geradores.util;
 
-import com.github.merelysnow.geradores.utils.item.ItemStackBuilder;
+import com.github.merelysnow.geradores.util.item.ItemStackBuilder;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import org.bukkit.Material;

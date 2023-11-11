@@ -1,10 +1,10 @@
 package com.github.merelysnow.geradores.inventory;
 
 import com.github.merelysnow.geradores.data.GeneratorsLogs;
-import com.github.merelysnow.geradores.database.GeneratorsLogsDataBase;
-import com.github.merelysnow.geradores.utils.DateFormatter;
-import com.github.merelysnow.geradores.utils.EntityName;
-import com.github.merelysnow.geradores.utils.item.ItemStackBuilder;
+import com.github.merelysnow.geradores.repository.GeneratorsLogsRepository;
+import com.github.merelysnow.geradores.util.DateFormatter;
+import com.github.merelysnow.geradores.util.EntityName;
+import com.github.merelysnow.geradores.util.item.ItemStackBuilder;
 import com.google.common.collect.Lists;
 import me.saiintbrisson.minecraft.PaginatedView;
 import me.saiintbrisson.minecraft.PaginatedViewSlotContext;
@@ -16,13 +16,13 @@ import java.text.NumberFormat;
 
 public class GeneratorsLogsView extends PaginatedView<GeneratorsLogs> {
 
-    private final GeneratorsLogsDataBase generatorsLogsDataBase;
+    private final GeneratorsLogsRepository generatorsLogsRepository;
 
-    public GeneratorsLogsView(GeneratorsLogsDataBase generatorsLogsDataBase) {
+    public GeneratorsLogsView(GeneratorsLogsRepository generatorsLogsRepository) {
         super(6, "Logs da facção");
-        this.generatorsLogsDataBase = generatorsLogsDataBase;
+        this.generatorsLogsRepository = generatorsLogsRepository;
 
-        setSource(ctx -> Lists.newArrayList(generatorsLogsDataBase.selectMany(ctx.get("factionTag"))));
+        setSource(ctx -> Lists.newArrayList(generatorsLogsRepository.selectMany(ctx.get("factionTag"))));
         setLayout("XXXXXXXXX",
                 "XOOOOOOOX",
                 "<OOOOOOO>",

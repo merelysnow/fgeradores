@@ -1,8 +1,8 @@
-package com.github.merelysnow.geradores.database;
+package com.github.merelysnow.geradores.repository;
 
 import com.github.merelysnow.geradores.data.FactionGenerators;
-import com.github.merelysnow.geradores.database.adapter.FactionGeneratorsAdapter;
-import com.github.merelysnow.geradores.database.connection.RepositoryProvider;
+import com.github.merelysnow.geradores.repository.adapter.FactionGeneratorsAdapter;
+import com.github.merelysnow.geradores.repository.connection.RepositoryProvider;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.henryfabio.sqlprovider.connector.SQLConnector;
@@ -12,13 +12,13 @@ import org.bukkit.plugin.Plugin;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
-public class FactionGeneratorsDataBase extends RepositoryProvider {
+public class FactionGeneratorsRepository extends RepositoryProvider {
 
     private static final String TABLE_NAME = "fgeradores_table";
     private static final Gson GSON = new GsonBuilder().create();
     private SQLExecutor executor;
 
-    public FactionGeneratorsDataBase(Plugin instance) {
+    public FactionGeneratorsRepository(Plugin instance) {
         super(instance);
         prepare();
         createTable();

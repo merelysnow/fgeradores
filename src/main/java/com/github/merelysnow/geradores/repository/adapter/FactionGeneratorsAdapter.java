@@ -1,4 +1,4 @@
-package com.github.merelysnow.geradores.database.adapter;
+package com.github.merelysnow.geradores.repository.adapter;
 
 import com.github.merelysnow.geradores.data.FactionGenerators;
 import com.google.common.reflect.TypeToken;

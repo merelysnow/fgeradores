@@ -31,6 +31,7 @@ allprojects {
         compileOnlyApi("com.fasterxml.jackson.core:jackson-databind:2.13.4.2")
         compileOnlyApi("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.4")
         api("com.github.HenryFabio:sql-provider:9561f20fd2")
+        implementation("com.github.DevNatan.inventory-framework:inventory-framework:6f6a634cc5478a16ff81773ed80187dde27d6edd")
         compileOnlyApi("org.jetbrains:annotations:23.0.0")
 
         compileOnlyApi(fileTree("libs"))

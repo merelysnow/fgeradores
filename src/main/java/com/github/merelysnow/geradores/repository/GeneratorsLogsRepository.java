@@ -1,8 +1,8 @@
-package com.github.merelysnow.geradores.database;
+package com.github.merelysnow.geradores.repository;
 
 import com.github.merelysnow.geradores.data.GeneratorsLogs;
-import com.github.merelysnow.geradores.database.adapter.GeneratorsLogsAdapter;
-import com.github.merelysnow.geradores.database.connection.RepositoryProvider;
+import com.github.merelysnow.geradores.repository.adapter.GeneratorsLogsAdapter;
+import com.github.merelysnow.geradores.repository.connection.RepositoryProvider;
 import com.henryfabio.sqlprovider.connector.SQLConnector;
 import com.henryfabio.sqlprovider.executor.SQLExecutor;
 import org.bukkit.plugin.Plugin;
@@ -10,12 +10,12 @@ import org.bukkit.plugin.Plugin;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
-public class GeneratorsLogsDataBase extends RepositoryProvider {
+public class GeneratorsLogsRepository extends RepositoryProvider {
 
     private static final String TABLE_NAME = "logs_table";
     private SQLExecutor executor;
 
-    public GeneratorsLogsDataBase(Plugin instance) {
+    public GeneratorsLogsRepository(Plugin instance) {
         super(instance);
         prepare();
         createTable();

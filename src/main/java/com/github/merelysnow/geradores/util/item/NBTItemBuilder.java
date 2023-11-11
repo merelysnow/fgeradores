@@ -6,7 +6,7 @@
  * Spring, Inc (github.com/rede-spring)
  */
 
-package com.github.merelysnow.geradores.utils.item;
+package com.github.merelysnow.geradores.util.item;
 
 import lombok.RequiredArgsConstructor;
 import net.minecraft.server.v1_8_R3.NBTTagCompound;
